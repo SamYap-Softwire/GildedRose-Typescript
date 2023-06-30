@@ -21,34 +21,33 @@ export class GildedRose {
         for (const currentItem of this.items){
 
             if (currentItem.name !== 'Sulfuras, Hand of Ragnaros'){
-                let newQuality = currentItem.quality - 1;
+                let qualityChange = -1;
 
                 if (currentItem.name === 'Aged Brie'){
-                    newQuality = currentItem.quality + 1;
+                    qualityChange = 1;
                 } else if (currentItem.name === 'Backstage passes to a TAFKAL80ETC concert') {
                     if (currentItem.sellIn <= 0) {
-                        newQuality = 0;
+                        qualityChange = -currentItem.quality;
                     } else if (currentItem.sellIn <= 5) {
-                        newQuality = currentItem.quality + 3;
+                        qualityChange = 3;
                     } else if (currentItem.sellIn <= 10) {
-                        newQuality = currentItem.quality + 2;
+                        qualityChange = 2;
                     } else {
-                        newQuality = currentItem.quality + 1;
+                        qualityChange = 1;
                     }
                 } else {
                     if (currentItem.sellIn > 0) {
-                        newQuality = currentItem.quality - 1;
-                        if (currentItem.name === 'Conjured'){
-                            newQuality = currentItem.quality - 2;
-                        }
+                        qualityChange = - 1;
                     } else {
-                        newQuality = currentItem.quality - 2;
-                        if (currentItem.name === 'Conjured'){
-                            newQuality = currentItem.quality - 4;
-                        }
+                        qualityChange = - 2;
+                    }
+
+                    if (currentItem.name === 'Conjured'){
+                        qualityChange *= 2;
                     }
                 }
 
+                const newQuality = currentItem.quality + qualityChange;
                 if (newQuality >= 0 && newQuality <= 50) {
                     currentItem.quality = newQuality;
                 }
