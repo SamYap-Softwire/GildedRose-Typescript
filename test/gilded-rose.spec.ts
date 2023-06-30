@@ -64,8 +64,8 @@ describe('Gilded Rose', function () {
         expect(sellIn).equals(updatedSellIn);
     });
 
-    it('quality of sulfuras does not decrease', function(){
-        const gildedRose = new GildedRose([new Item('Sulfuras, Hand of Ragnaros', -1, 30)]);
+    it('quality of sulfuras is 80 and does not change', function(){
+        const gildedRose = new GildedRose([new Item('Sulfuras, Hand of Ragnaros', -1, 80)]);
         let qualityOnPrevDay = gildedRose.items[0].quality;
 
         for (let day = 0; day < 10; day++) {
@@ -123,41 +123,3 @@ describe('Gilded Rose', function () {
     });
 })
 
-
-
-/*
-TESTS BASED ON SPECIFICATION
-
-    list of 1 item
-    check quality decreases as sellin date approaches
-
-    list of 1 item
-    sell by date has passed
-    check quality degrades twice as fast
-
-    list of 1 item
-    set quality to be negative
-    check *something should happen -> not valid*
-
-    list of 1 ' Aged Brie'
-    check quality increases the older it gets
-
-    list of 1 item
-    set quality to be more than 50
-    check *something should happen -> not valid*
-
-    list of 1 item 'Sulfuras'
-    check sellin value is "whenever" or "infinity" or equivalent
-
-    list of 1 item 'Sulfuras'
-    check quality does not decrease
-
-    list of 1 item 'Backstage passes'
-    check quality increases by 2 as sellin value <= 10 days
-
-    list of 1 item 'backstage passes'
-    check quality increases by 3 when sellin value <= 5 days
-
-    list of 1 item 'backstage passes'
-    check quality = 0 after concert
- */
