@@ -18,52 +18,63 @@ export class GildedRose {
     }
 
     updateQuality() {
-        for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].name != 'Aged Brie' && this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-                if (this.items[i].quality > 0) {
-                    if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                        this.items[i].quality = this.items[i].quality - 1
+        for (const currentItem of this.items){
+            if (currentItem.name === 'Aged Brie' || currentItem.name === 'Backstage passes to a TAFKAL80ETC concert'){
+                if (currentItem.quality < 50) {
+                    currentItem.quality = currentItem.quality + 1
+                    if (currentItem.name == 'Backstage passes to a TAFKAL80ETC concert') {
+                        if (currentItem.sellIn < 11) {
+                            // implements the backstage pass increase in quality by 2 (in 2 parts)
+                            if (currentItem.quality < 50) {
+                                currentItem.quality = currentItem.quality + 1
+                            }
+                        }
+                        if (currentItem.sellIn < 6) {
+                            // implements the backstage pass increase in quality by 3 (in 3 parts)
+                            if (currentItem.quality < 50) {
+                                currentItem.quality = currentItem.quality + 1
+                            }
+                        }
                     }
                 }
             } else {
-                if (this.items[i].quality < 50) {
-                    this.items[i].quality = this.items[i].quality + 1
-                    if (this.items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-                        if (this.items[i].sellIn < 11) {
-                            if (this.items[i].quality < 50) {
-                                this.items[i].quality = this.items[i].quality + 1
-                            }
-                        }
-                        if (this.items[i].sellIn < 6) {
-                            if (this.items[i].quality < 50) {
-                                this.items[i].quality = this.items[i].quality + 1
-                            }
-                        }
+                // everything else which by default decreases in quality
+                if (currentItem.quality > 0) {
+                    if (currentItem.name != 'Sulfuras, Hand of Ragnaros') {
+                        // sulfuras has different behaviours: quality doesn't decrease
+                        currentItem.quality = currentItem.quality - 1
                     }
                 }
             }
-            if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                this.items[i].sellIn = this.items[i].sellIn - 1;
+
+            if (currentItem.name != 'Sulfuras, Hand of Ragnaros') {
+                // every item other than sulfuras has a sellin day
+                currentItem.sellIn = currentItem.sellIn - 1;
+                // decrements sellin day globally (i.e. for all items) to show time passing
             }
-            if (this.items[i].sellIn < 0) {
-                if (this.items[i].name != 'Aged Brie') {
-                    if (this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-                        if (this.items[i].quality > 0) {
-                            if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                                this.items[i].quality = this.items[i].quality - 1
+            if (currentItem.sellIn < 0) {
+                // behaviour past 'expiry'
+                if (currentItem.name != 'Aged Brie') {
+                    if (currentItem.name != 'Backstage passes to a TAFKAL80ETC concert') {
+                        if (currentItem.quality > 0) {
+                            // if quality is still > 0 after expired, quality degrades twice as fast
+                            if (currentItem.name != 'Sulfuras, Hand of Ragnaros') {
+                                // since sulfuras is included here, it shows sulfuras sellin is set to -1 for non-existent
+                                currentItem.quality = currentItem.quality - 1
                             }
                         }
                     } else {
-                        this.items[i].quality = this.items[i].quality - this.items[i].quality
+                        // if backstage passes, quality = 0
+                        currentItem.quality = currentItem.quality - currentItem.quality
                     }
                 } else {
-                    if (this.items[i].quality < 50) {
-                        this.items[i].quality = this.items[i].quality + 1
+                    // if aged brie, quality keeps increasing: even after expiry. This means max is 50.
+                    if (currentItem.quality < 50) {
+                        currentItem.quality = currentItem.quality + 1
                     }
                 }
             }
         }
-
         return this.items;
     }
 }
