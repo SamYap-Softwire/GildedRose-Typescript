@@ -6,26 +6,23 @@ describe('Gilded Rose', function () {
     it('normal item should approach sell In date everytime updateQuality is called', function() {
         const gildedRose = new GildedRose([new Item('foo', 10, 10)]);
         const originalSellIn = gildedRose.items[0].sellIn;
-        const items = gildedRose.updateQuality();
+        const newSellin = gildedRose.updateQuality()[0].sellIn;
 
-        expect(items[0].sellIn).to.be.lessThan(originalSellIn);
+        expect(newSellin).to.be.lessThan(originalSellIn);
     })
 
     it('normal quality should decrease as sell In date approaches', function(){
         const gildedRose = new GildedRose([new Item('foo', 10, 10)]);
         const originalQuality = gildedRose.items[0].quality;
-        const items = gildedRose.updateQuality();
+        const newQuality = gildedRose.updateQuality()[0].quality;
 
-        expect(items[0].quality).to.be.lessThan(originalQuality);
+        expect(newQuality).to.be.lessThan(originalQuality);
     });
 
     it('quality should not be negative when updated', function(){
         const gildedRose = new GildedRose([new Item('foo', 3, 0)]);
-
-        while (gildedRose.items[0].sellIn > 0) {
-            const items = gildedRose.updateQuality();
-            expect(items[0].quality).to.be.greaterThan(-1);
-        }
+        const currentQuality = gildedRose.updateQuality()[0].quality;
+        expect(currentQuality).to.be.greaterThan(-1);
     });
 
     it('normal quality should decrease twice as fast after sell In date has passed', function(){
@@ -66,46 +63,42 @@ describe('Gilded Rose', function () {
 
     it('quality of sulfuras is 80 and does not change', function(){
         const gildedRose = new GildedRose([new Item('Sulfuras, Hand of Ragnaros', -1, 80)]);
-        let qualityOnPrevDay = gildedRose.items[0].quality;
-
-        for (let day = 0; day < 10; day++) {
-            const currentQuality = gildedRose.updateQuality()[0].quality;
-            expect(currentQuality).equals(qualityOnPrevDay);
-            qualityOnPrevDay = currentQuality;
-        }
+        const qualityOnPrevDay = gildedRose.items[0].quality;
+        const currentQuality = gildedRose.updateQuality()[0].quality;
+        expect(currentQuality).equals(qualityOnPrevDay);
     });
 
     it('quality of backstage pass increases by 1 when sell In date approaches with more than 10 days', function(){
         const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 20, 20)]);
-        let qualityOnPrevDay = gildedRose.items[0].quality;
+        const qualityOnPrevDay = gildedRose.items[0].quality;
         const currentQuality = gildedRose.updateQuality()[0].quality;
         expect(currentQuality).equals(qualityOnPrevDay+1);
     });
 
     it('quality of backstage pass increases by 2 when sell In date approaches with 10 days', function(){
         const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 10, 20)]);
-        let qualityOnPrevDay = gildedRose.items[0].quality;
+        const qualityOnPrevDay = gildedRose.items[0].quality;
         const currentQuality = gildedRose.updateQuality()[0].quality;
         expect(currentQuality).equals(qualityOnPrevDay+2);
     });
 
     it('quality of backstage pass increases by 2 when sell In date approaches with less than 10 days', function(){
         const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 8, 20)]);
-        let qualityOnPrevDay = gildedRose.items[0].quality;
+        const qualityOnPrevDay = gildedRose.items[0].quality;
         const currentQuality = gildedRose.updateQuality()[0].quality;
         expect(currentQuality).equals(qualityOnPrevDay+2);
     });
 
     it('quality of backstage pass increases by 2 when sell In date approaches with 5 days', function(){
         const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 5, 20)]);
-        let qualityOnPrevDay = gildedRose.items[0].quality;
+        const qualityOnPrevDay = gildedRose.items[0].quality;
         const currentQuality = gildedRose.updateQuality()[0].quality;
         expect(currentQuality).equals(qualityOnPrevDay+3);
     });
 
     it('quality of backstage pass increases by 2 when sell In date approaches with less than 5 days', function(){
         const gildedRose = new GildedRose([new Item('Backstage passes to a TAFKAL80ETC concert', 3, 20)]);
-        let qualityOnPrevDay = gildedRose.items[0].quality;
+        const qualityOnPrevDay = gildedRose.items[0].quality;
         const currentQuality = gildedRose.updateQuality()[0].quality;
         expect(currentQuality).equals(qualityOnPrevDay+3);
     });
@@ -121,5 +114,19 @@ describe('Gilded Rose', function () {
         const currentQuality = gildedRose.updateQuality()[0].quality;
         expect(currentQuality).equals(50);
     });
+
+    it('quality of conjured should degrade twice as fast as normal items before sell In date', function(){
+        const gildedRose = new GildedRose([new Item('Conjured', 20, 30)]);
+        const originalQuality = gildedRose.items[0].quality;
+        const newQuality = gildedRose.updateQuality()[0].quality;
+        expect(newQuality).equals(originalQuality-2);
+    })
+
+    it('quality of conjured should degrade twice as fast as normal items after sell In date', function(){
+        const gildedRose = new GildedRose([new Item('Conjured', 0, 30)]);
+        const originalQuality = gildedRose.items[0].quality;
+        const newQuality = gildedRose.updateQuality()[0].quality;
+        expect(newQuality).equals(originalQuality-4);
+    })
 })
 

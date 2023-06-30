@@ -38,8 +38,14 @@ export class GildedRose {
                 } else {
                     if (currentItem.sellIn > 0) {
                         newQuality = currentItem.quality - 1;
+                        if (currentItem.name === 'Conjured'){
+                            newQuality = currentItem.quality - 2;
+                        }
                     } else {
                         newQuality = currentItem.quality - 2;
+                        if (currentItem.name === 'Conjured'){
+                            newQuality = currentItem.quality - 4;
+                        }
                     }
                 }
 
